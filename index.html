@@ -20,25 +20,29 @@
             align-items: center;
             font-family: 'Arial', sans-serif;
             cursor: pointer;
+            padding: 20px;
         }
         
         .container {
             position: relative;
             z-index: 10;
             text-align: center;
+            max-width: 90%;
+            padding: 20px;
         }
         
         .text {
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             font-weight: bold;
             color: #fff;
             text-shadow: 
                 0 0 10px #ff4da6,
                 0 0 20px #ff4da6,
-                0 0 30px #ff4da6,
-                0 0 40px #ff4da6;
+                0 0 30px #ff4da6;
             animation: pulsate 2s infinite alternate;
             letter-spacing: 2px;
+            line-height: 1.4;
+            will-change: transform, text-shadow;
         }
         
         @keyframes pulsate {
@@ -46,16 +50,14 @@
                 text-shadow: 
                     0 0 10px #ff4da6,
                     0 0 20px #ff4da6,
-                    0 0 30px #ff4da6,
-                    0 0 40px #ff4da6;
+                    0 0 30px #ff4da6;
                 transform: scale(1);
             }
             100% {
                 text-shadow: 
                     0 0 15px #ff4da6,
                     0 0 30px #ff4da6,
-                    0 0 45px #ff4da6,
-                    0 0 60px #ff4da6;
+                    0 0 45px #ff4da6;
                 transform: scale(1.05);
             }
         }
@@ -75,6 +77,7 @@
             border-radius: 50%;
             animation: twinkle var(--duration) infinite ease-in-out;
             opacity: var(--opacity);
+            will-change: opacity;
         }
         
         @keyframes twinkle {
@@ -96,14 +99,16 @@
             position: absolute;
             border-radius: 50%;
             animation: explode 1s forwards;
+            will-change: transform, opacity;
         }
         
         @keyframes explode {
             0% {
-                transform: translate(0, 0);
+                transform: translate(0, 0) scale(1);
                 opacity: 1;
             }
             100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
                 opacity: 0;
             }
         }
@@ -119,18 +124,18 @@
     <script>
         // Создание звёзд
         const nightSky = document.getElementById('night-sky');
-        const starCount = 200;
+        const starCount = 150; // Уменьшено количество звёзд для производительности
         
         for (let i = 0; i < starCount; i++) {
             const star = document.createElement('div');
             star.classList.add('star');
             
             // Случайные параметры для звезды
-            const size = Math.random() * 3;
+            const size = Math.random() * 2 + 1; // Уменьшен максимальный размер
             const xPos = Math.random() * 100;
             const yPos = Math.random() * 100;
             const duration = 2 + Math.random() * 3 + 's';
-            const opacity = 0.3 + Math.random() * 0.7;
+            const opacity = 0.3 + Math.random() * 0.5; // Уменьшена максимальная непрозрачность
             
             star.style.width = size + 'px';
             star.style.height = size + 'px';
@@ -155,7 +160,7 @@
             
             document.body.appendChild(firework);
             
-            const particleCount = 100;
+            const particleCount = 70; // Уменьшено количество частиц
             const colors = ['#ff4da6', '#4d94ff', '#ffcc00', '#66ff33', '#ff3366', '#33ccff'];
             
             for (let i = 0; i < particleCount; i++) {
@@ -163,8 +168,8 @@
                 particle.classList.add('particle');
                 
                 const angle = Math.random() * Math.PI * 2;
-                const distance = 10 + Math.random() * 150;
-                const size = 3 + Math.random() * 5;
+                const distance = 10 + Math.random() * 120; // Уменьшена дистанция
+                const size = 2 + Math.random() * 4; // Уменьшен размер частиц
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 
                 const xMove = Math.cos(angle) * distance;
@@ -173,22 +178,9 @@
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
                 particle.style.backgroundColor = color;
-                particle.style.boxShadow = `0 0 ${size*2}px ${color}`;
-                
-                // Анимация движения частиц
-                particle.animate([
-                    { 
-                        transform: 'translate(0, 0)',
-                        opacity: 1
-                    },
-                    { 
-                        transform: `translate(${xMove}px, ${yMove}px)`,
-                        opacity: 0
-                    }
-                ], {
-                    duration: 800 + Math.random() * 400,
-                    easing: 'cubic-bezier(0.1, 0.3, 0.2, 1)'
-                });
+                particle.style.boxShadow = `0 0 ${size*1.5}px ${color}`;
+                particle.style.setProperty('--tx', `${xMove}px`);
+                particle.style.setProperty('--ty', `${yMove}px`);
                 
                 firework.appendChild(particle);
             }
@@ -196,7 +188,7 @@
             // Удаление салюта после завершения анимации
             setTimeout(() => {
                 firework.remove();
-            }, 1500);
+            }, 1000);
         }
     </script>
 </body>
